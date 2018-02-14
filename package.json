@@ -1,12 +1,17 @@
 {
   "name": "@fyresite/document_validator",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Validate and translate JSON objects for Document Databases like MongoDB or Amazon's DynamoDB.",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
-  "keywords": ["document","validation", "validator", "object_validation"],
+  "keywords": [
+    "document",
+    "validation",
+    "validator",
+    "object_validation"
+  ],
   "author": "Fyresite",
   "license": "ISC",
   "bugs": {
