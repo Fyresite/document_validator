@@ -205,12 +205,34 @@ var userTranslationV1 = {
     _v:1
 };
 
+var userUpdate = {
+    status: "active"
+}
+var userUpdateBad = {
+  status: "pie"
+}
+var userUpdateInvalid = {
+    foo: "bar"
+}
+
 test('valid schema', () => {
   expect(userValidator.validate(userValid, 'v1')).toEqual({});
 });
 
 test('valid schema (validate)', () => {
   expect(userValidator.validate(userValid2, 'v1')).toEqual({});
+});
+
+test('valid schema update', () => {
+  expect(userValidator.validateKeys(userUpdate, 'v1')).toEqual({});
+});
+
+test('invalid schema update', () => {
+  expect(userValidator.validateKeys(userUpdateInvalid, 'v1')).not.toEqual({});
+});
+
+test('invalid schema update (bad op)', () => {
+  expect(userValidator.validateKeys(userUpdateBad, 'v1')).not.toEqual({});
 });
 
 test('invalid schema (top level)', () => {
@@ -243,6 +265,6 @@ test('valid schema missing required', () => {
 
 test('translation v1 to v2', () => {
   let newDoc = userValidator.translate(userTranslationV1, 'v2');
-  
+
   expect(newDoc).toBeTruthy();
 });

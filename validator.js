@@ -146,6 +146,50 @@ class Validator {
         });
         return errors;
     }
+
+    /**
+     * Validates keys for document against specific version of the schema
+     * @param {Object} fields - Document to be validated
+     * @param {string} version - version to be validated.
+     * @returns {Object}
+     */
+    validateKeys(fields, version) {
+        let schema = this.schemas[version];
+        let errors = {};
+
+        Object.keys(fields).map(fieldName => {
+            let fieldSchema = schema[fieldName]
+            let fieldData = fields[fieldName]
+            if(fieldSchema){
+                Object.keys(fieldSchema).forEach(key => {
+                    let rule = fieldSchema[key];
+                    switch (key) {
+                        case 'type':
+                            validateType(fieldName, fieldData, rule, errors);
+                            break;
+                        case 'op':
+                            if(typeof rule === 'function') {
+                                if (!rule(fieldName, fields)) {
+                                    errors[fieldName] = `${fieldName} failed its op check`;
+                                }
+                            } else {
+                                errors[fieldName] = `${fieldName}'s schema contains invalid op function`;
+                            }
+                            break;
+                        case 'validate':
+                            if (!objectValidator(rule, fieldData)) {
+                                errors[fieldName] = `${fieldName} does not match validation rules defined in schema`;
+                            }
+                            break;
+                    }
+                });
+            } else {
+                errors[fieldName] = `${fieldName} Is not a valid field`;
+            }
+
+        });
+        return errors;
+    }
     /**
      * Translates document to version specified
      * the documents version is automatically read through the _v property on the document
@@ -206,6 +250,15 @@ function validateField(rules,fieldData, fieldName, document){
             switch (key) {
                 case 'type':
                     validateType(fieldName, fieldData, rule, errors);
+                    break;
+                case 'op':
+                    if(typeof rule === 'function') {
+                        if (!rule(fieldName, document)) {
+                            errors.push(`${fieldName} failed its op check`);
+                        }
+                    } else {
+                        errors.push(`${fieldName}'s schema contains invalid op function`);
+                    }
                     break;
                 case 'validate':
                     if (!objectValidator(rule, fieldData)) {

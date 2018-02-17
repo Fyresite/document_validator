@@ -18,6 +18,12 @@ module.exports = function (Types,Op) {
         "pattern": "^([a-z ])+$"
       }
     },
+    "status": {
+      type: Types.STRING,
+      default: "pending",
+      op: Op.any(['pending', 'active', 'deactivated', 'on hold'])
+    },
+
     "myInt":{
       type: Types.INTEGER,
       "required": {
