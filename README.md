@@ -155,6 +155,7 @@ Class used validate and translate documents
     * [new Validator(schemaName, [config])](#new_Validator_new)
     * [.init()](#Validator+init) ⇒ <code>Promise</code>
     * [.validate(document, version)](#Validator+validate) ⇒ <code>Object</code>
+    * [.validateKeys(fields, version)](#Validator+validateKeys) ⇒ <code>Object</code>
     * [.translate(document, version)](#Validator+translate) ⇒ <code>Object</code>
 
 <a name="new_Validator_new"></a>
@@ -188,6 +189,18 @@ Validates document against specific version of the schema
 | Param | Type | Description |
 | --- | --- | --- |
 | document | <code>Object</code> | Document to be validated |
+| version | <code>string</code> | version to be validated. |
+
+<a name="Validator+validateKeys"></a>
+
+### validator.validateKeys(fields, version) ⇒ <code>Object</code>
+Validates keys for document against specific version of the schema
+
+**Kind**: instance method of [<code>Validator</code>](#Validator)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fields | <code>Object</code> | Document to be validated |
 | version | <code>string</code> | version to be validated. |
 
 <a name="Validator+translate"></a>
