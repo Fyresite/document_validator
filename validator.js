@@ -133,7 +133,7 @@ class Validator {
         Object.keys(schema).map(fieldName => {
             let field = schema[fieldName];
             if (typeof field === 'object' && !field.type) {
-                let result = validateSecondary(document[fieldName], field);
+                let result = validateSecondary(document[fieldName] || {}, field);
                 if (Object.keys(result).length > 0) {
                     errors[fieldName] = result;
                 }
@@ -225,7 +225,7 @@ function validateSecondary(document, schema) {
     Object.keys(schema).map(fieldName => {
         let field = schema[fieldName];
         if (typeof field === 'object' && !field.type) {
-            let result = validateSecondary(document[fieldName],field);
+            let result = validateSecondary(document[fieldName] || {} ,field);
             if (Object.keys(result).length > 0) {
                 errors[fieldName] = result;
             }
