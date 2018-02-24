@@ -310,22 +310,42 @@ function validateType(fieldName, fieldData, rule, errors) {
     switch (rule) {
         case Types.INTEGER:
             if (typeof fieldData !== 'number' || fieldData % 1 != 0) {
-                errors.push(`${fieldName} is not an INTEGER`);
+                let error = `${fieldName} is not an INTEGER`
+                if(!(errors instanceof Array)) {
+                    errors[fieldName] = error;
+                } else {
+                    errors.push(error);
+                }
             }
             break;
         case Types.FLOAT:
             if (typeof fieldData !== 'number' || fieldData % 1 == 0) {
-                errors.push(`${fieldName} is not a FLOAT`);
+                let error = `${fieldName} is not a FLOAT`
+                if(!(errors instanceof Array)) {
+                    errors[fieldName] = error;
+                } else {
+                    errors.push(error);
+                }
             }
             break;
         case Types.DATE:
             if (!(fieldData instanceof Date)) {
-                errors.push(`${fieldName} received invalid DATE`);
+                let error = `${fieldName} received invalid DATE`
+                if(!(errors instanceof Array)) {
+                    errors[fieldName] = error;
+                } else {
+                    errors.push(error);
+                }
             }
             break;
         default:
             if(typeof fieldData !== rule.toLowerCase()){
-                errors.push(`${fieldName} is type "${(typeof fieldData).toUpperCase()}" expected type "${rule.toUpperCase()}"`);
+                let error = `${fieldName} is type "${(typeof fieldData).toUpperCase()}" expected type "${rule.toUpperCase()}"`
+                if(!(errors instanceof Array)) {
+                    errors[fieldName] = error;
+                } else {
+                    errors.push(error);
+                }
             }
     }
 }
