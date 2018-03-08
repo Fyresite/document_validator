@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-var AWS = require('aws-sdk');
 var requireFromString = require('require-from-string');
 var objectValidator = require('@fyresite/object-validator');
 
@@ -22,7 +21,8 @@ class Validator {
      * @param {string} config.s3Bucket - Name of the s3 bucket to connect the schemas are located
      * @param {string} config.awsProfile - The AWS Profile you want to use to connect to the bucket
      */
-    constructor(schemaName, config) {
+    constructor(schemaName, config, AWS_SDK) {
+        var AWS = AWS_SDK;
         this.finalConf = Object.assign({}, {
             schemaPath:schemaPathDefault,
             isS3: false
