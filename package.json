@@ -31,6 +31,6 @@
     "require-from-string": "^2.0.1"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.207.0"
+    "aws-sdk": "^2.190.0"
   }
 }
