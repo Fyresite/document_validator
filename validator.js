@@ -1,3 +1,4 @@
+var AWS = require('aws-sdk');
 var fs = require('fs');
 var path = require('path');
 var requireFromString = require('require-from-string');
@@ -10,8 +11,6 @@ var Transformer = require('./transformer');
 var appRoot = path.resolve(__dirname).split('/node_modules')[0];
 var schemaPathDefault = path.join(appRoot,'schemas');
 
-var AWS;
-
 /** Class used validate and translate documents */
 class Validator {
     /**
@@ -23,8 +22,7 @@ class Validator {
      * @param {string} config.s3Bucket - Name of the s3 bucket to connect the schemas are located
      * @param {string} config.awsProfile - The AWS Profile you want to use to connect to the bucket
      */
-    constructor(schemaName, config, AWS_SDK) {
-        AWS = AWS_SDK;
+    constructor(schemaName, config) {
         this.finalConf = Object.assign({}, {
             schemaPath:schemaPathDefault,
             isS3: false
