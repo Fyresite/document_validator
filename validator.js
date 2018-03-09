@@ -12,18 +12,8 @@ class Validator {
      * @param {Object} [translations] - Version translation object with migration functions
      */
     constructor(schemas, translations={}) {
-        this.schemas = {};
+        this.schemas = schemas;
         this.translations = translations;
-
-        Object.keys(schemas).forEach(item => {
-          let version = item[item.length - 2];
-          this.schemas[version] = schemas[item](Types, Op);
-        });
-
-        Object.keys(translations).forEach(item => {
-          let version = item[item.length - 2];
-          this.translations[version] = translations[item];
-        });
     }
 
     /**
