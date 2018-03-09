@@ -1,123 +1,29 @@
-var AWS = require('aws-sdk');
-var fs = require('fs');
-var path = require('path');
-var requireFromString = require('require-from-string');
 var objectValidator = require('@fyresite/object-validator');
 
 var Types = require('./types');
 var Op = require('./op');
 var Transformer = require('./transformer');
 
-var appRoot = path.resolve(__dirname).split('/node_modules')[0];
-var schemaPathDefault = path.join(appRoot,'schemas');
-
 /** Class used validate and translate documents */
 class Validator {
     /**
      * Create a validator.
-     * @param {string} schemaName - Name of the schema to validate.
-     * @param {Object} [config] - Custom configuration options.
-     * @param {string} config.schemaPath=APP_ROOT/schemas - the path to the schemas folder
-     * @param {boolean} config.isS3=true - Define if schema location is a s3 bucket
-     * @param {string} config.s3Bucket - Name of the s3 bucket to connect the schemas are located
-     * @param {string} config.awsProfile - The AWS Profile you want to use to connect to the bucket
+     * @param {Object} schemas - Schemas to validate against
+     * @param {Object} [translations] - Version translation object with migration functions
      */
-    constructor(schemaName, config) {
-        this.finalConf = Object.assign({}, {
-            schemaPath:schemaPathDefault,
-            isS3: false
-        }, config);
-
-        this.schemaName = schemaName;
+    constructor(schemas, translations={}) {
         this.schemas = {};
-        this.translations = {};
+        this.translations = translations;
 
-        if (this.finalConf.awsProfile) {
-          var credentials = new AWS.SharedIniFileCredentials({ profile: this.finalConf.awsProfile });
-          AWS.config.credentials = credentials;
-        }
-
-
-        if (!this.finalConf.isS3) {
-            fs.readdirSync(path.join(this.finalConf.schemaPath,schemaName, 'schema')).forEach(filename => {
-                let filenameSplit = filename.split('.');
-                let version = filenameSplit[filenameSplit.length - 2];
-                this.schemas[version] = require(path.resolve(path.join(this.finalConf.schemaPath,schemaName, 'schema', filename)))(Types, Op);
-            });
-
-            fs.readdirSync(path.join(this.finalConf.schemaPath,schemaName,'translation')).forEach(filename => {
-                let filenameSplit = filename.split('.');
-                let version = filenameSplit[filenameSplit.length - 2];
-                this.translations[version] = require(path.resolve(path.join(this.finalConf.schemaPath,schemaName, 'translation', filename)));
-            });
-        }
-    }
-    /**
-     * Used to fetch schema from s3, the instance validate function must be used inside .then() to guarantee that schemas are loaded before validating
-     * @returns {Promise}
-     */
-    init() {
-        var s3 = new AWS.S3();
-        var bucket = this.finalConf.s3Bucket;
-        var setSchema = this.setSchema.bind(this);
-        var getSchema = this.getSchema.bind(this);
-        var setTranslation = this.setTranslation.bind(this);
-        var getTranslation = this.getTranslation.bind(this);
-        return new Promise((resolve, reject) => {
-            var params = {
-                Bucket: this.finalConf.s3Bucket, /* required */
-                Prefix: path.join(this.finalConf.schemaPath,this.schemaName),
-              };
-            s3.listObjectsV2(params, function(err, data) {
-                if (err) {
-                    reject(err)
-                } // an error occurred
-                else {
-                    Promise.all(data.Contents.map(file => {
-                        return new Promise((resolve, reject) => {
-                            s3.getObject({
-                                Bucket: bucket,
-                                Key: file.Key
-                            }, function (err, item) {
-                                if(err) {
-                                    reject(err)
-                                } else {
-                                    let keySplit = file.Key.split('/')
-                                    let filenameSplit = keySplit[keySplit.length - 1].split('.')
-                                    let version = filenameSplit[filenameSplit.length - 2];
-                                    if (keySplit[keySplit.length - 2] === 'schema') {
-                                        setSchema(version, requireFromString(item.Body.toString('utf8'))(Types,Op));
-                                    }
-                                    else if (keySplit[keySplit.length - 2] === 'translation') {
-                                        setTranslation(version, requireFromString(item.Body.toString('utf8')));
-                                    }
-                                    resolve();
-                                }
-                            })
-                        })
-                    })).then(() => {
-                        resolve();
-                    }).catch(err => {
-                        reject(err);
-                    })
-                }
-            });
+        Object.keys(schemas).forEach(item => {
+          let version = item[item.length - 2];
+          this.schemas[version] = schemas[item](Types, Op);
         });
-    }
 
-    setSchema (version, schema) {
-        this.schemas[version] = schema;
-    }
-
-    getSchema () {
-       return this.schemas;
-    }
-
-    setTranslation(version, translation) {
-        this.translations[version] = translation;
-    }
-    getTranslation() {
-       return this.translations;
+        Object.keys(translations).forEach(item => {
+          let version = item[item.length - 2];
+          this.translations[version] = translations[item];
+        });
     }
 
     /**

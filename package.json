@@ -29,8 +29,5 @@
     "lodash.clonedeep": "^4.5.0",
     "object-path": "^0.11.4",
     "require-from-string": "^2.0.1"
-  },
-  "peerDependencies": {
-    "aws-sdk": "^2.190.0"
   }
 }
