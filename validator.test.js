@@ -1,6 +1,20 @@
 var Validator = require('./validator');
 
-var userValidator = new Validator('user', { schemaPath:'./test_schema' });
+var userV1 = require('./test_schema/user/schema/v1.js');
+var userV2 = require('./test_schema/user/schema/v2.js');
+
+var userVersions = {
+    'v1': userV1,
+    'v2': userV2
+}
+
+var userV1_V2 = require('./test_schema/user/translation/v1.js');
+
+var userTranslators = {
+    'v1': userV1_V2
+}
+
+var userValidator = new Validator(userVersions, userTranslators);
 
 var userValid = {
     "name": {
