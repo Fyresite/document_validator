@@ -244,7 +244,6 @@ function validateType(fieldName, fieldData, rule, errors) {
             }
             break;
         case Types.ARRAY:
-        console.log("made it")
             if (!(fieldData instanceof Array)) {
                 let error = `${fieldName} received invalid ARRAY`
                 if(!(errors instanceof Array)) {
@@ -256,7 +255,6 @@ function validateType(fieldName, fieldData, rule, errors) {
             break;
         default:
             if(typeof fieldData !== rule.toLowerCase()){
-                console.log(rule)
                 let error = `${fieldName} is type "${(typeof fieldData).toUpperCase()}" expected type "${rule.toUpperCase()}"`
                 if(!(errors instanceof Array)) {
                     errors[fieldName] = error;
