@@ -1,6 +1,6 @@
 {
   "name": "@fyresite/document_validator",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "Validate and translate JSON objects for Document Databases like MongoDB or Amazon's DynamoDB.",
   "main": "index.js",
   "scripts": {
