@@ -32,6 +32,11 @@ const OBJECT = 'OBJECT'
     @type {string}
     @default
 */
+const ARRAY = 'ARRAY'
+/** @constant
+    @type {string}
+    @default
+*/
 const BOOLEAN = 'BOOLEAN'
 
 module.exports = {
@@ -41,5 +46,6 @@ module.exports = {
     FLOAT,
     NUMBER,
     OBJECT,
+    ARRAY,
     BOOLEAN
 };

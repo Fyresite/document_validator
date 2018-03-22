@@ -11,6 +11,7 @@ module.exports = function (Types,Op) {
         "required": true
       }
     },
+    myArray:Types.ARRAY,
     validateField: {
       type:Types.STRING,
       validate: {

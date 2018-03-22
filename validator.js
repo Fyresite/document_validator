@@ -172,9 +172,10 @@ function validateField(rules,fieldData, fieldName, document){
             }
         });
     } else if (fieldData && typeof rules === 'string') {
-        if (typeof fieldData !== rules.toLowerCase()) {
-            errors.push(`${fieldName} is type "${(typeof fieldData).toUpperCase()}" expected type "${rules.toUpperCase()}"`);
-        }
+        // if (typeof fieldData !== rules.toLowerCase()) {
+        //     errors.push(`${fieldName} is type "${(typeof fieldData).toUpperCase()}" expected type "${rules.toUpperCase()}"`);
+        // }
+        validateType(fieldName,fieldData,rules,errors)
     } else {
         if (rules.required) {
             if (rules.default) {
@@ -242,8 +243,20 @@ function validateType(fieldName, fieldData, rule, errors) {
                 }
             }
             break;
+        case Types.ARRAY:
+        console.log("made it")
+            if (!(fieldData instanceof Array)) {
+                let error = `${fieldName} received invalid ARRAY`
+                if(!(errors instanceof Array)) {
+                    errors[fieldName] = error;
+                } else {
+                    errors.push(error);
+                }
+            }
+            break;
         default:
             if(typeof fieldData !== rule.toLowerCase()){
+                console.log(rule)
                 let error = `${fieldName} is type "${(typeof fieldData).toUpperCase()}" expected type "${rule.toUpperCase()}"`
                 if(!(errors instanceof Array)) {
                     errors[fieldName] = error;

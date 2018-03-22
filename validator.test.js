@@ -45,6 +45,7 @@ var userValid2 = {
   validateField:"mike",
   myInt:2,
   myFloat:3.5,
+  myArray: [38,384],
   "email": "email@example.com",
   "phone": "5555555555",
   "dob": new Date("1996-11-09"),
@@ -234,6 +235,7 @@ test('valid schema', () => {
 });
 
 test('valid schema (validate)', () => {
+
   expect(userValidator.validate(userValid2, 'v1')).toEqual({});
 });
 
